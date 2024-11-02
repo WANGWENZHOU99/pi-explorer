@@ -1,0 +1,36 @@
+# 此工作流程将使用节点运行测试，然后在创建版本时将包发布到 GitHub Packages
+# 有关更多信息，请参阅：https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
+
+名称： Node.js包
+
+在：
+  发布：
+    类型：[已创建]
+
+职位：
+  建造者：
+    运行： ubuntu-latest
+    步骤：
+      -使用： actions/checkout@v4
+      -使用： actions/setup-node@v4
+        和：
+          节点版本：20
+      -运行： npm ci
+      -运行： npm 测试
+
+  发布gpr：
+    需求： 建设
+    运行： ubuntu-latest
+    权限：
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com/
+      - run: npm ci
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
